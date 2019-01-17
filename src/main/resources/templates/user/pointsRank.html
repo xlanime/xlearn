@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+</head>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery.min.js" charset="utf-8"></script>
+<body>
+
+<div class="layui-btn-group demoTable">
+</div>
+
+<table class="layui-table" lay-data="{url:'/user/pointsRank', page:true, id:'pointsRank'}"
+       lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{field:'sort_num', sort: true, fixed: true}">用户排行</th>
+        <th lay-data="{field:'nickname'}">用户昵称</th>
+        <th lay-data="{field:'user_points', sort: true}">当前积分</th>
+    </tr>
+    </thead>
+</table>
+
+
+<script>
+    //必须要这一行否则表格数据无法正常显示
+    layui.use('table', function () {
+
+    });
+</script>
+
+</body>
+</html>

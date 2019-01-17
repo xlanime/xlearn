@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlearn.dao.TaskMapper">
+  <resultMap id="BaseResultMap" type="com.xlearn.pojo.Task">
+    <constructor>
+      <idArg column="task_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="task_points" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="task_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="task_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="task_cover" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="finished" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="task_time" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    task_id, task_points, task_name, task_value, task_cover, finished,  task_time,
+    create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from xlearn_private_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from xlearn_private_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xlearn.pojo.Task">
+    insert into xlearn_private_task (task_id, task_points, task_name, 
+      task_value, task_cover, finished, 
+      owner_id, task_time, create_time, 
+      update_time)
+    values (#{taskId,jdbcType=INTEGER}, #{taskPoints,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, 
+      #{taskValue,jdbcType=VARCHAR}, #{taskCover,jdbcType=VARCHAR}, #{finished,jdbcType=INTEGER}, 
+      #{ownerId,jdbcType=INTEGER}, #{taskTime,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xlearn.pojo.Task">
+    insert into xlearn_private_task
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="taskPoints != null">
+        task_points,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="taskValue != null">
+        task_value,
+      </if>
+      <if test="taskCover != null">
+        task_cover,
+      </if>
+      <if test="finished != null">
+        finished,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="taskTime != null">
+        task_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="taskId != null">
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskPoints != null">
+        #{taskPoints,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskValue != null">
+        #{taskValue,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCover != null">
+        #{taskCover,jdbcType=VARCHAR},
+      </if>
+      <if test="finished != null">
+        #{finished,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="taskTime != null">
+        #{taskTime,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xlearn.pojo.Task">
+    update xlearn_private_task
+    <set>
+      <if test="taskPoints != null">
+        task_points = #{taskPoints,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskValue != null">
+        task_value = #{taskValue,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCover != null">
+        task_cover = #{taskCover,jdbcType=VARCHAR},
+      </if>
+      <if test="finished != null">
+        finished = #{finished,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="taskTime != null">
+        task_time = #{taskTime,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xlearn.pojo.Task">
+    update xlearn_private_task
+    set task_points = #{taskPoints,jdbcType=INTEGER},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_value = #{taskValue,jdbcType=VARCHAR},
+      task_cover = #{taskCover,jdbcType=VARCHAR},
+      finished = #{finished,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=INTEGER},
+      task_time = #{taskTime,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByKeyword" parameterType="string" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM xlearn_task
+    where task_name like %#{keyword}%
+  </select>
+
+  <select id="getTaskList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM xlearn_task
+    WHERE finished = 0
+  </select>
+</mapper>

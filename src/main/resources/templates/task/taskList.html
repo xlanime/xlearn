@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+</head>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery.min.js" charset="utf-8"></script>
+<body>
+
+<div class="layui-btn-group demoTable">
+    <button id="showAddRewardForm" data-method="offset" data-type="auto" class="layui-btn">添加任务</button>
+</div>
+<script>
+    layui.use('layer', function(){ //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+
+        //触发事件
+        var active = {
+            offset: function(othis){
+                var type = othis.data('type')
+                    ,text = othis.text();
+
+                layer.open({
+                    type: 1
+                    ,area:['500px','350px']
+                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,id: 'layerDemo'+type //防止重复弹出
+                    ,
+                    //新增的表单
+                    content: "<form class=\"layui-form\" style='width:450px;'>" +
+                    " <br/><div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务名称</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskName\" name=\"taskName\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"任务名称\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务内容</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskValue\" name=\"taskValue\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"任务内容\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务次数</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskTime\" name=\"taskTime\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"任务次数\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖励积分</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskPoints\" name=\"taskPoints\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"奖励积分\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <button class=\"layui-btn\" lay-submit lay-filter=\"addTaskForm\">立即提交</button>\n" +
+                    "            <button type=\"reset\" class=\"layui-btn layui-btn-primary\">重置</button>\n" +
+                    "        </div>\n" +
+                    "    </div></form>"
+                });
+            }
+        };
+
+        $('#showAddRewardForm').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+
+        layui.use(['layer', 'form'], function() {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+            //清理左侧菜单缓存
+            var index = layer.load(2, {
+                shade: [0.3, '#333']
+            });
+            $(window).on('load', function() {
+                layer.close(index);
+                form.on('submit(addTaskForm)', function(data) {
+                    $.ajax({
+                        url:'/task/addTask',
+                        data:data.field,
+                        dataType:'json',
+                        type:'post',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            layer.closeAll();
+                            window.location.reload(true);
+                        }
+                    })
+                    return false;
+                });
+
+                form.on('submit(updateTask)', function(data) {
+                    $.ajax({
+                        url:'/task/updateTask',
+                        data:data.field,
+                        dataType:'json',
+                        type:'post',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            layer.closeAll();
+                            window.location.reload(true);
+                        }
+                    })
+                    return false;
+                });
+            }());
+
+        });
+
+
+    });
+</script>
+
+<table class="layui-table" lay-data="{url:'/task/taskList', page:true, id:'taskList'}"
+       lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'task_id', sort: true, fixed: true}">任务ID</th>
+        <th lay-data="{field:'task_name'}">任务名称</th>
+        <th lay-data="{field:'task_points', sort: true}">任务奖励积分</th>
+        <th lay-data="{field:'task_value'}">任务内容</th>
+        <th lay-data="{field:'task_time'}">任务次数</th>
+
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="finish">完成任务</a>
+    <a class="layui-btn layui-btn-xs" data-type="auto"  lay-event="edit" id="updateReward">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script>
+    layui.use('table', function () {
+
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function (obj) {
+            console.log(obj)
+        });
+
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('确认删除', function (index) {
+                    console.log("{taskId:"+obj['data']['task_id']+"}");
+                    $.ajax({
+                        url:'/task/deleteTask?taskId='+obj['data']['task_id'],
+                        type:'get',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            window.location.reload(true);
+                        }
+                    })
+
+                });
+            } else if (obj.event === 'edit') {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                var type = othis.data('type')
+                    ,text = othis.text();
+                layer.open({
+                    type: 1
+                    ,area:['500px','350px']
+                    ,offset: type
+                    ,id: 'updateTask'+type //防止重复弹出
+                    ,
+                    //修改的表单
+                    content: "<form class=\"layui-form\" style='width:450px;'>" +
+                    " <br/><div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务名称</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskName\" name=\"taskName\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['task_name']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务内容</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskValue\" name=\"taskValue\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['task_value']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">任务次数</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskTime\" name=\"taskTime\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['task_time']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖励积分</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"taskPoints\" name=\"taskPoints\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['task_points']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div><input type=\"hidden\" id=\"taskId\" name=\"taskId\" value='"+data['task_id']+"'>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <button class=\"layui-btn\" lay-submit lay-filter=\"updateTask\">立即提交</button>\n" +
+                    "        </div>\n" +
+                    "    </div></form>"
+                });
+            }else if (obj.event === 'finish') {
+                layer.confirm('确认完成', function (index) {
+                    console.log("{taskId:"+obj['data']['task_id']+"}");
+                    $.ajax({
+                        url:'/task/finishTask?taskId='+obj['data']['task_id'],
+                        // dataType:'json',
+                        // contentType: 'application/json;charset=UTF-8',
+                        // data:{"rewardId":obj['data']['reward_id']},
+                        type:'get',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            window.location.reload(true);
+                        }
+                    })
+
+                });
+            }
+        });
+
+        var $ = layui.$, active = {
+        };
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

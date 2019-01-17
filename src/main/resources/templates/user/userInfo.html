@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+
+<body>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>个人信息管理</legend>
+</fieldset>
+
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" id="username" name="userName" lay-verify="required" autocomplete="off"
+                   placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="password" id="password" name="password" lay-verify="pass" placeholder="请输入密码"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-block">
+            <input type="text" id="nickname" name="nickName" lay-verify="required" autocomplete="off"
+                   placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+    <!-- 隐藏表单传递当前用户id -->
+    <input type="hidden" id="userid" name="userId" >
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="userInfoForm">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="/layui/layui.js"></script>
+<script src="/js/jquery.min.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/user/getUserInfo",//请求地址
+            dataType: "json",//数据格式
+            type: "post",//请求方式
+            success: function (data) {   //如何发送成功
+                console.log(JSON.stringify(data));
+                console.log(data['data']['nickName']);
+                document.getElementById("username").value = data['data']['userName'];
+                document.getElementById("password").value = data['data']['password'];
+                document.getElementById("nickname").value = data['data']['nickName'];
+                document.getElementById("userid").value = data['data']['userId'];
+                // if (data['data']['sex'] != null) {
+                //     if (data['data']['sex'] == "男") {
+                //         document.getElementById("sex_man").checked = true;
+                //     } else if (data['data']['sex'] == "女") {
+                //         document.getElementById("sex_woman").checked = true;
+                //     }
+                // }
+                document.getElementById("username").value = data['data']['userName'];
+            },
+        })
+    });
+
+    layui.use(['layer', 'form'], function() {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            form = layui.form;
+
+        //清理左侧菜单缓存
+        var index = layer.load(2, {
+            shade: [0.3, '#333']
+        });
+        $(window).on('load', function() {
+            layer.close(index);
+            form.on('submit(userInfoForm)', function(data) {
+                $.ajax({
+                    url:'/user/updateUserInfo',
+                    data:data.field,
+                    dataType:'json',
+                    type:'post',
+                    success:function (data) {
+                        if (data['status'] == '0'){
+                            layer.msg(data['msg'],{time: 1000});
+                        }else{
+                            layer.msg(data['msg']);
+                        }
+                    }
+                })
+                return false;
+            });
+        }());
+
+    });
+
+</script>
+
+</body>
+
+</html>

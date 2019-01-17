@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xlearn.dao.RewardMapper">
+  <resultMap id="BaseResultMap" type="com.xlearn.pojo.Reward">
+    <constructor>
+      <idArg column="reward_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reward_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="reward_cover" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="reward_consume" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reward_stock" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    reward_id, reward_name, reward_cover, reward_consume, reward_stock, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from xlearn_reward
+    where reward_id = #{rewardId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from xlearn_reward
+    where reward_id = #{rewardId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xlearn.pojo.Reward">
+    insert into xlearn_reward (reward_id, reward_name, reward_cover, 
+      reward_consume, reward_stock, create_time, 
+      update_time)
+    values (#{rewardId,jdbcType=INTEGER}, #{rewardName,jdbcType=VARCHAR}, #{rewardCover,jdbcType=VARCHAR}, 
+      #{rewardConsume,jdbcType=INTEGER}, #{rewardStock,jdbcType=INTEGER}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.xlearn.pojo.Reward">
+    insert into xlearn_reward
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rewardId != null">
+        reward_id,
+      </if>
+      <if test="rewardName != null">
+        reward_name,
+      </if>
+      <if test="rewardCover != null">
+        reward_cover,
+      </if>
+      <if test="rewardConsume != null">
+        reward_consume,
+      </if>
+      <if test="rewardStock != null">
+        reward_stock,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rewardId != null">
+        #{rewardId,jdbcType=INTEGER},
+      </if>
+      <if test="rewardName != null">
+        #{rewardName,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardCover != null">
+        #{rewardCover,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardConsume != null">
+        #{rewardConsume,jdbcType=INTEGER},
+      </if>
+      <if test="rewardStock != null">
+        #{rewardStock,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xlearn.pojo.Reward">
+    update xlearn_reward
+    <set>
+      <if test="rewardName != null">
+        reward_name = #{rewardName,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardCover != null">
+        reward_cover = #{rewardCover,jdbcType=VARCHAR},
+      </if>
+      <if test="rewardConsume != null">
+        reward_consume = #{rewardConsume,jdbcType=INTEGER},
+      </if>
+      <if test="rewardStock != null">
+        reward_stock = #{rewardStock,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+        update_time = now(),
+    </set>
+    where reward_id = #{rewardId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xlearn.pojo.Reward">
+    update xlearn_reward
+    set reward_name = #{rewardName,jdbcType=VARCHAR},
+      reward_cover = #{rewardCover,jdbcType=VARCHAR},
+      reward_consume = #{rewardConsume,jdbcType=INTEGER},
+      reward_stock = #{rewardStock,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where reward_id = #{rewardId,jdbcType=INTEGER}
+  </update>
+
+  <select id="getRewardList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from xlearn_reward
+  </select>
+
+  <select id="selectByKeyword" resultMap="BaseResultMap" parameterType="string">
+    SELECT
+    <include refid="Base_Column_List"/>
+    from xlearn_reward
+    where reward_name LIKE "%#{keyword}%"
+  </select>
+</mapper>

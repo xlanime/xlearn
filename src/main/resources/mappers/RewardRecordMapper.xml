@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xlearn.dao.RewardRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.xlearn.pojo.RewardRecord" >
+    <constructor >
+      <idArg column="record_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="record_reward" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="record_user" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    record_id, record_reward, record_user, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from xlearn_reward_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from xlearn_reward_record
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xlearn.pojo.RewardRecord" >
+    insert into xlearn_reward_record (record_id, record_reward, record_user, 
+      create_time, update_time)
+    values (#{recordId,jdbcType=INTEGER}, #{recordReward,jdbcType=INTEGER}, #{recordUser,jdbcType=INTEGER}, 
+      now(), now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.xlearn.pojo.RewardRecord" >
+    insert into xlearn_reward_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="recordId != null" >
+        record_id,
+      </if>
+      <if test="recordReward != null" >
+        record_reward,
+      </if>
+      <if test="recordUser != null" >
+        record_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="recordId != null" >
+        #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="recordReward != null" >
+        #{recordReward,jdbcType=INTEGER},
+      </if>
+      <if test="recordUser != null" >
+        #{recordUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xlearn.pojo.RewardRecord" >
+    update xlearn_reward_record
+    <set >
+      <if test="recordReward != null" >
+        record_reward = #{recordReward,jdbcType=INTEGER},
+      </if>
+      <if test="recordUser != null" >
+        record_user = #{recordUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xlearn.pojo.RewardRecord" >
+    update xlearn_reward_record
+    set record_reward = #{recordReward,jdbcType=INTEGER},
+      record_user = #{recordUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where record_id = #{recordId,jdbcType=INTEGER}
+  </update>
+</mapper>

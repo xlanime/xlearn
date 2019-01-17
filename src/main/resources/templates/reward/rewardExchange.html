@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+</head>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery.min.js" charset="utf-8"></script>
+<body>
+
+<div class="layui-btn-group demoTable">
+</div>
+
+<table class="layui-table" lay-data="{url:'/reward/listReward', page:true, id:'listReward'}"
+       lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'reward_id', sort: true, fixed: true}">奖品ID</th>
+        <th lay-data="{field:'reward_name'}">奖品名称</th>
+        <th lay-data="{field:'reward_consume', sort: true}">兑换所需积分</th>
+        <th lay-data="{field:'reward_stock'}">奖品剩余数量</th>
+
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="exchange">兑换</a>
+</script>
+
+
+<script>
+    layui.use('table', function () {
+
+        var $ = layui.$, active = {};
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function (obj) {
+            console.log(obj)
+        });
+
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            if (obj.event === 'exchange') {
+                layer.confirm('确认兑换', function (index) {
+                    console.log("{rewardId:" + obj['data']['reward_id'] + "}");
+                    $.ajax({
+                        url: '/reward/rewardExchange?rewardId=' + obj['data']['reward_id'],
+                        // dataType:'json',
+                        // contentType: 'application/json;charset=UTF-8',
+                        // data:{"rewardId":obj['data']['reward_id']},
+                        type: 'get',
+                        success: function (data) {
+                            console.log(data);
+                            //等待一秒重新刷新页面。
+                            layer.msg(data['msg'], {time: 2000});
+                            window.location.reload(true);
+                        }
+                    })
+
+                });
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>

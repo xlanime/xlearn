@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+</head>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<script src="js/jquery.min.js" charset="utf-8"></script>
+<body>
+
+<div class="layui-btn-group demoTable">
+    <button id="showAddRewardForm" data-method="offset" data-type="auto" class="layui-btn">添加奖品</button>
+</div>
+<script>
+    layui.use('layer', function(){ //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+
+        //触发事件
+        var active = {
+            offset: function(othis){
+                var type = othis.data('type')
+                    ,text = othis.text();
+
+                layer.open({
+                    type: 1
+                    ,area:['500px','350px']
+                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,id: 'layerDemo'+type //防止重复弹出
+                    ,
+                    //新增的表单
+                    content: "<form class=\"layui-form\" style='width:450px;'>" +
+                    " <br/><div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖品名称</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardName\" name=\"rewardName\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"奖品名称\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">兑换积分</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardConsume\" name=\"rewardConsume\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"兑换所需积分\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖品数量</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardStock\" name=\"rewardStock\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   placeholder=\"奖品数量\" class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <button class=\"layui-btn\" lay-submit lay-filter=\"addRewardForm\">立即提交</button>\n" +
+                    "            <button type=\"reset\" class=\"layui-btn layui-btn-primary\">重置</button>\n" +
+                    "        </div>\n" +
+                    "    </div></form>"
+                });
+            }
+        };
+
+        $('#showAddRewardForm').on('click', function(){
+            var othis = $(this), method = othis.data('method');
+            active[method] ? active[method].call(this, othis) : '';
+        });
+
+
+        layui.use(['layer', 'form'], function() {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+            //清理左侧菜单缓存
+            var index = layer.load(2, {
+                shade: [0.3, '#333']
+            });
+            $(window).on('load', function() {
+                layer.close(index);
+                form.on('submit(addRewardForm)', function(data) {
+                    $.ajax({
+                        url:'/reward/addReward',
+                        data:data.field,
+                        dataType:'json',
+                        type:'post',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            layer.closeAll();
+                            window.location.reload(true);
+                        }
+                    })
+                    return false;
+                });
+
+                form.on('submit(updateReward)', function(data) {
+                    $.ajax({
+                        url:'/reward/updateReward',
+                        data:data.field,
+                        dataType:'json',
+                        type:'post',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            layer.closeAll();
+                            window.location.reload(true);
+                        }
+                    })
+                    return false;
+                });
+            }());
+
+        });
+
+
+    });
+</script>
+
+<table class="layui-table" lay-data="{url:'/reward/listReward', page:true, id:'listReward'}"
+       lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+        <th lay-data="{field:'reward_id', sort: true, fixed: true}">奖品ID</th>
+        <th lay-data="{field:'reward_name'}">奖品名称</th>
+        <th lay-data="{field:'reward_consume', sort: true}">兑换所需积分</th>
+        <th lay-data="{field:'reward_stock'}">奖品剩余数量</th>
+        <th lay-data="{field:'create_time'}">创建时间</th>
+
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" data-type="auto"  lay-event="edit" id="updateReward">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script>
+    layui.use('table', function () {
+
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function (obj) {
+            console.log(obj)
+        });
+
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('确认删除', function (index) {
+                    console.log("{rewardId:"+obj['data']['reward_id']+"}");
+                    $.ajax({
+                        url:'/reward/deleteReward?rewardId='+obj['data']['reward_id'],
+                        // dataType:'json',
+                        // contentType: 'application/json;charset=UTF-8',
+                        // data:{"rewardId":obj['data']['reward_id']},
+                        type:'get',
+                        success:function (data) {
+                            //等待一秒重新刷新页面。
+                            setTimeout(layer.msg(data['msg'],{time: 2000}),2000);
+                            window.location.reload(true);
+                        }
+                    })
+
+                });
+            } else if (obj.event === 'edit') {
+                var othis = $(this), method = othis.data('method');
+                active[method] ? active[method].call(this, othis) : '';
+                // layer.alert('编辑行：<br>' + JSON.stringify(data))
+                var type = othis.data('type')
+                    ,text = othis.text();
+                layer.open({
+                    type: 1
+                    ,area:['500px','350px']
+                    ,offset: type
+                    ,id: 'updateReward'+type //防止重复弹出
+                    ,
+                    //修改的表单
+                    content: "<form class=\"layui-form\" style='width:450px;'>" +
+                    " <br/><div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖品名称</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardName\" name=\"rewardName\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['reward_name']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">兑换积分</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardConsume\" name=\"rewardConsume\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['reward_consume']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <label class=\"layui-form-label\">奖品数量</label>\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <input type=\"text\" id=\"rewardStock\" name=\"rewardStock\" lay-verify=\"required\" autocomplete=\"off\"\n" +
+                    "                   value='"+data['reward_stock']+"' class=\"layui-input\">\n" +
+                    "        </div>\n" +
+                    "    </div>" +
+                    "<div class=\"layui-form-item\">\n" +
+                    "        <div class=\"layui-input-block\">\n" +
+                    "            <button class=\"layui-btn\" lay-submit lay-filter=\"updateReward\">立即提交</button>\n" +
+                    "        </div>\n" +
+                    "    </div><input type=\"hidden\" id=\"rewardId\" name=\"rewardId\" value='"+data['reward_id']+"'></form>"
+                });
+            }
+        });
+
+        var $ = layui.$, active = {
+        };
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>
