@@ -6,6 +6,8 @@ import java.util.Date;
 
 /**
  * 奖品类
+ *
+ * @Author Richard
  */
 @Data
 public class Reward {

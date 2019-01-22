@@ -2,6 +2,9 @@ package com.xlearn.pojo;
 
 import java.util.Date;
 
+/**
+ * @Author Richard
+ */
 public class RewardRecord {
     private Integer recordId;
 

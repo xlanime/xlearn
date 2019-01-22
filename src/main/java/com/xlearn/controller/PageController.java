@@ -10,6 +10,8 @@ import javax.servlet.http.HttpSession;
 
 /**
  * 用于界面跳转的Controller
+ *
+ * @Author Richard
  */
 @RequestMapping("/")
 @Controller
@@ -19,7 +21,6 @@ public class PageController {
      * 跳转到系统首页
      * @return
      */
-
     @RequestMapping("index")
     public String index(HttpSession session){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
@@ -120,6 +121,10 @@ public class PageController {
         return "task/taskList";
     }
 
+    /**
+     * 跳转到个人任务列表界面
+     * @return
+     */
     @RequestMapping("toPrivateTask")
     public String toPrivateTask(){
         return "ptask/taskList";

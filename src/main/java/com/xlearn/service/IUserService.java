@@ -3,6 +3,9 @@ package com.xlearn.service;
 import com.xlearn.common.ServerResponse;
 import com.xlearn.pojo.User;
 
+/**
+ * @Author Richard
+ */
 public interface IUserService {
 
     /**

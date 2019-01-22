@@ -13,6 +13,9 @@ import java.util.Date;
 @Slf4j
 public class PointUtil {
 
+    //默认最低学习时间10分钟
+    private static final int LEARN_TIME = 10*60*1000;
+
     /**
      * 根据开始时间和结束时间计算积分
      * @param beginTime
@@ -24,7 +27,7 @@ public class PointUtil {
         log.info("本次学习时长(毫秒):"+time);
 
         //如果学习时间小于十分钟，则不计分。
-        if(time < 10*60*1000){
+        if(time < LEARN_TIME){
             return 0;
         }
         //计算规则：1小时 = 10积分

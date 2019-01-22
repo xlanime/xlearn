@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 小组实体类
+ * @Author Richard
+ */
 @Data
 public class Group {
     private Integer groupId;

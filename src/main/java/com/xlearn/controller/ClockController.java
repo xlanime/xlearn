@@ -1,6 +1,5 @@
 package com.xlearn.controller;
 
-import com.google.common.collect.Maps;
 import com.xlearn.common.Const;
 import com.xlearn.common.ServerResponse;
 import com.xlearn.pojo.Clock;
@@ -10,7 +9,6 @@ import com.xlearn.util.PointUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,8 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * 定时控制类
+ * @Author Richard
+ */
 @Slf4j
 @Controller
 @RequestMapping("/clock/")
@@ -39,13 +40,13 @@ public class ClockController {
         }
         ServerResponse<Integer> serverResponse = iClockService.startClock(user.getUserId());
         if (serverResponse.isSuccess()) {
-            Cookie cookie_timer = new Cookie(Const.CURRENT_TIMER, serverResponse.getData().toString());
-            Cookie cookie_user = new Cookie(Const.CURRENT_USER, user.getUserId().toString());
+            Cookie cookieTimer = new Cookie(Const.CURRENT_TIMER, serverResponse.getData().toString());
+            Cookie cookieUser = new Cookie(Const.CURRENT_USER, user.getUserId().toString());
             //将用户信息和计时信息放到cookie。设计过期时间为一个月
-            cookie_timer.setMaxAge(30 * 24 * 60 * 60);
-            cookie_user.setMaxAge(30 * 24 * 60 * 60);
-            response.addCookie(cookie_timer);
-            response.addCookie(cookie_user);
+            cookieTimer.setMaxAge(30 * 24 * 60 * 60);
+            cookieUser.setMaxAge(30 * 24 * 60 * 60);
+            response.addCookie(cookieTimer);
+            response.addCookie(cookieUser);
             session.setAttribute(Const.CURRENT_TIMER, serverResponse.getData());
             return "time/timer";
         }

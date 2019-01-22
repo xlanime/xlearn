@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @Author Richard
+ */
 @Service("iClockService")
 @Slf4j
 public class ClockServiceImpl implements IClockService{
@@ -31,7 +34,7 @@ public class ClockServiceImpl implements IClockService{
         clock.setBeginTime(date);
         clock.setEndTime(date);
         clock.setUserId(userId);
-        clock.setPoints(0);// new Date()为获取当前系统时间
+        clock.setPoints(0);
         int rowCount = clockMapper.insert(clock);
         if(rowCount > 0){
             return ServerResponse.createBySuccess(clock.getClockId());

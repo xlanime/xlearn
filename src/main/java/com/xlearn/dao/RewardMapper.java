@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+/**
+ * @Author Richard
+ */
 @Mapper
 @Component(value = "rewardMapper")
 public interface RewardMapper {

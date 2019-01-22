@@ -23,15 +23,14 @@
 </ul>
 <script src="js/jquery.min.js"></script>
 <script>
-    window.onload = function (ev) {
-        /* 加载热销商品列表页*/
+    window.onload = function () {
+        /* 加载已学习时间*/
         $.ajax({
             url: "/clock/learnTime",
             type: "get",
             dataType: "json",
             success: function (data) {
                 console.log("learn time : "+JSON.stringify(data)),
-                // $("learn_time").text(data['time'])
                 document.getElementById("learn_time").innerText = data['time'];
             }
         });

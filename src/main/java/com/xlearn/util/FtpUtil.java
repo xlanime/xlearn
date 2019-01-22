@@ -11,14 +11,15 @@ import java.util.List;
 
 /**
  * FTP文件上传类
+ * @Author Richard
  */
 @Data
 @Slf4j
-public class FTPUtil {
+public class FtpUtil {
 
-    private static final String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
-    private static final String ftpUser = PropertiesUtil.getProperty("ftp.user");
-    private static final String ftpPwd = PropertiesUtil.getProperty("ftp.pass");
+    private static final String FTPIP = PropertiesUtil.getProperty("ftp.server.ip");
+    private static final String FTPUSER = PropertiesUtil.getProperty("ftp.user");
+    private static final String FTPPWD = PropertiesUtil.getProperty("ftp.pass");
 
     private String ip;
     private Integer port;
@@ -26,7 +27,7 @@ public class FTPUtil {
     private String pwd;
     private FTPClient ftpClient;
 
-    public FTPUtil(String ip,Integer port,String user,String pwd){
+    public FtpUtil(String ip, Integer port, String user, String pwd){
         this.ip = ip;
         this.port = port;
         this.user = user;
@@ -39,7 +40,7 @@ public class FTPUtil {
      * @return
      */
     public static boolean uploadFile(List<File> fileList) throws IOException{
-        FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPwd);
+        FtpUtil ftpUtil = new FtpUtil(FTPIP,21,FTPUSER,FTPPWD);
         log.info("开始连接FTP服务器");
         boolean result = ftpUtil.uploadFile("img",fileList);
         log.info("上传结束，上传结果{}",result);
@@ -53,11 +54,16 @@ public class FTPUtil {
         //连接FTP服务器
         if(connectServer(this.ip,this.port,this.user,this.pwd)){
             try {
-                ftpClient.changeWorkingDirectory(remotePath);//更换工作文件夹
-                ftpClient.setBufferSize(1024);//设置缓冲区大小
-                ftpClient.setControlEncoding("UTF-8");//设置编码
-                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);//设置文件类型为二进制类型，可以减少乱码问题
-                ftpClient.enterLocalPassiveMode();//打开本地被动模式
+                //更换工作文件夹
+                ftpClient.changeWorkingDirectory(remotePath);
+                //设置缓冲区大小
+                ftpClient.setBufferSize(1024);
+                //设置编码
+                ftpClient.setControlEncoding("UTF-8");
+                //设置文件类型为二进制类型，可以减少乱码问题
+                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+                //打开本地被动模式
+                ftpClient.enterLocalPassiveMode();
                 for(File fileItem:fileList){
                     fis = new FileInputStream(fileItem);
                     //存储文件，需要传递文件名和文件流

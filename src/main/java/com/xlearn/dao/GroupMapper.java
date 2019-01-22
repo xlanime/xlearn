@@ -4,7 +4,9 @@ import com.xlearn.pojo.Group;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * @Author Richard
+ */
 @Mapper
 @Component(value = "groupMapper")
 public interface GroupMapper {

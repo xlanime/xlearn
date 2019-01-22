@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 计时对象实体类
+ * @Author Richard
+ */
 @Data
 public class Clock {
     private Integer clockId;

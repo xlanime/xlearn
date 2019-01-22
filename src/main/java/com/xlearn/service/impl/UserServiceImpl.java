@@ -2,11 +2,9 @@ package com.xlearn.service.impl;
 
 import com.xlearn.common.ServerResponse;
 import com.xlearn.dao.UserMapper;
-import com.xlearn.pojo.Reward;
 import com.xlearn.pojo.User;
 import com.xlearn.service.IUserService;
-import com.xlearn.util.MD5Util;
-import org.apache.commons.lang3.StringUtils;
+import com.xlearn.util.Md5Util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +15,10 @@ import java.util.List;
 
 /**
  * 用户逻辑处理类
+ * @Author Richard
  */
 @Service("iUserService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements IUserService{
 
     @Autowired
@@ -33,7 +32,7 @@ public class UserServiceImpl implements IUserService{
         }
 
         //若用户存在则根据用户名密码查询,注意密码需要加密。
-        password = MD5Util.MD5EncodeUtf8(password);
+        password = Md5Util.Md5EncodeUtf8(password);
         User user = userMapper.selectByUsernamePassword(username,password);
         if(user == null){
             return ServerResponse.createByErrorMessage("用户名或密码错误");
@@ -51,7 +50,7 @@ public class UserServiceImpl implements IUserService{
             return ServerResponse.createByErrorMessage("用户名已存在");
         }
         //给用户密码加密
-        user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
+        user.setPassword(Md5Util.Md5EncodeUtf8(user.getPassword()));
         user.setUserHead("/images/head/0.jpg");
         int rowCount = userMapper.insert(user);
         if(rowCount > 0){

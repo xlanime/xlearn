@@ -5,7 +5,7 @@ import com.xlearn.common.Const;
 import com.xlearn.common.ServerResponse;
 import com.xlearn.pojo.User;
 import com.xlearn.service.IUserService;
-import com.xlearn.util.MD5Util;
+import com.xlearn.util.Md5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -80,10 +80,10 @@ public class UserController {
             return ServerResponse.createByErrorMessage("用户尚未登录");
         }
         //判断是否是当前用户修改自己的信息
-        if(userObj.getUserId() == user.getUserId()){
+        if(userObj.getUserId().equals(user.getUserId())){
             //判断用户是否修改密码。
             if(!user.getPassword().equals(userObj.getPassword())) {
-                user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
+                user.setPassword(Md5Util.Md5EncodeUtf8(user.getPassword()));
             }
             return iUserService.updateUserInfo(user);
         }

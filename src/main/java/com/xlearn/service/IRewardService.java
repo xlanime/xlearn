@@ -6,6 +6,9 @@ import com.xlearn.pojo.User;
 
 import java.util.List;
 
+/**
+ * @Author Richard
+ */
 public interface IRewardService {
 
     ServerResponse<Reward> addReward(Reward reward);
